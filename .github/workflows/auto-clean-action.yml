@@ -1,0 +1,24 @@
+name: Delete Old Workflow Runs
+ 
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天午夜运行
+ 
+jobs:
+  delete_old_workflow_runs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete Old Workflow Runs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_NAME: ${{ github.repository }}
+          DAYS_TO_KEEP: 7  # 保留工作流程记录的天数
+        run: |
+          repo_name=$REPO_NAME
+          days_to_keep=$DAYS_TO_KEEP
+          current_time=$(date +%s)
+          cutoff_time=$(date --date="@$((current_time - days_to_keep*86400))" +%Y-%m-%dT%H:%M:%SZ)
+          echo "Deleting workflow runs older than $cutoff_time"
+          gh run list --repo $repo_name --json created_at < /dev/null | jq -r '.[].database_id' | while read -r id; do
+            gh run view --repo $repo_name $id --json created_at < /dev/null | jq -r '.created_at | if . < "'"$cutoff_time"'" then "delete " + $id else "skip " + $id end'
+          done | xargs -I {} sh -c "echo {}; [ {} == delete* ] && gh run delete --repo $repo_name {} || echo {}"
