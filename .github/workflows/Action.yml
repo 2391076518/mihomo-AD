@@ -17,6 +17,7 @@ jobs:
           wget -O reject-list1.txt https://raw.githubusercontent.com/CHIZI-0618/v2ray-rules-dat/release/reject-list.txt
           wget -O reject-list2.txt https://raw.githubusercontent.com/Cats-Team/AdRules/main/adrules.list
           wget -O reject-list3.txt https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/Filters/AWAvenue-Ads-Rule-Clash.yaml
+          wget -O reject-list4.txt https://raw.githubusercontent.com/Chocolate4U/Iran-clash-rules/release/category-ads-all.txt
       - name: Add DOMAIN-SET
         run: |
           sed -i "s/^/- '+./" reject-list1.txt
@@ -27,9 +28,12 @@ jobs:
           sed -i "/^#.*/d" reject-list3.txt
           sed -i "/^payload.*/d" reject-list3.txt
           sed -i "s/$/'/" reject-list3.txt
-          sed -e "$r reject-list3.txt" reject-list2.txt reject-list1.txt >> reject-list.txt
+          sed -i "/^#.*/d" reject-list4.txt
+          sed -i "s/^/- '/" reject-list4.txt
+          sed -i "s/$/'/" reject-list4.txt
+          sed -e "$r reject-list4.txt" reject-list3.txt reject-list2.txt reject-list1.txt >> reject-list.txt
           sort reject-list.txt | uniq > reject.txt
-          rm -f reject-list.txt reject-list1.txt reject-list2.txt reject-list3.txt
+          rm -f reject-list.txt reject-list1.txt reject-list2.txt reject-list3.txt reject-list4.txt
           sed -i 1i\payload: reject.txt
           update_time="$(TZ=UTC-8 date +'%Y-%m-%d %H:%M:%S')(GMT+8)"
           sed -i '1i\#自动更新时间: '"$update_time"'' reject.txt
