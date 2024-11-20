@@ -27,7 +27,7 @@ jobs:
           sed -i "s/$/'/" reject-list2.txt
           sed -i "/^#.*/d" reject-list3.txt
           sed -i "/^payload.*/d" reject-list3.txt
-          sed -i "s/$/'/" reject-list3.txt
+          sed -i "s/  - '/- '+./g" reject-list3.txt
           sed -i "/^#.*/d" reject-list4.txt
           sed -i "s/^/- '/" reject-list4.txt
           sed -i "s/$/'/" reject-list4.txt
