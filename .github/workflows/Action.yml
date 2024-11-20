@@ -19,18 +19,13 @@ jobs:
           wget -O reject-list3.txt https://raw.githubusercontent.com/Chocolate4U/Iran-clash-rules/release/category-ads-all.txt
       - name: Add DOMAIN-SET
         run: |
-          sed -i "s/^/- '+./" reject-list1.txt
-          sed -i "s/$/'/" reject-list1.txt
-          sed -i "s/DOMAIN-SUFFIX,/- '+./g" reject-list2.txt
+          sed -i "s/^/+./" reject-list1.txt
+          sed -i "s/DOMAIN-SUFFIX,/+./g" reject-list2.txt
           sed -i "/^#.*/d" reject-list2.txt
-          sed -i "s/$/'/" reject-list2.txt
           sed -i "/^#.*/d" reject-list3.txt
-          sed -i "s/^/- '/" reject-list3.txt
-          sed -i "s/$/'/" reject-list3.txt
           sed -e "$r reject-list3.txt" reject-list2.txt reject-list1.txt >> reject-list.txt
           sort reject-list.txt | uniq > reject.txt
           rm -f reject-list.txt reject-list1.txt reject-list2.txt reject-list3.txt
-          sed -i 1i\payload: reject.txt
           update_time="$(TZ=UTC-8 date +'%Y-%m-%d %H:%M:%S')(GMT+8)"
           sed -i '1i\#自动更新时间: '"$update_time"'' reject.txt
       - name: Git push assets to "release" branch
