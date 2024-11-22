@@ -24,7 +24,7 @@ jobs:
           sed -i "/^#.*/d" reject-list2.txt
           sed -i "s/^/- '/" reject-list2.txt
           sed -i "s/$/'/" reject-list2.txt
-          sed -e "$r reject-list2.txt" reject-list1.txt >> reject-list.txt
+          sed -e "$r reject-list2.txt" reject-list2.txt reject-list1.txt >> reject-list.txt
           sort reject-list.txt | uniq > reject-domain.txt
           rm -f reject-list.txt reject-list1.txt reject-list2.txt
           sed -i 1i\payload: reject-domain.txt
