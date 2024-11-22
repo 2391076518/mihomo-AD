@@ -29,7 +29,7 @@ jobs:
           rm -f reject-list.txt reject-list1.txt reject-list2.txt
           sed -i 1i\payload: reject.txt
           update_time="$(TZ=UTC-8 date +'%Y-%m-%d %H:%M:%S')(GMT+8)"
-          sed -i '1i\#自动更新时间: '"$update_time"'' reject-domain.txt
+          sed -i '1i\#自动更新时间: '"$update_time"'' reject.txt
       - name: Git push assets to "release" branch
         run: |
           git init
