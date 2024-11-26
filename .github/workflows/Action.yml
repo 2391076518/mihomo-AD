@@ -14,19 +14,12 @@ jobs:
     steps:
       - name: Get AD domains
         run: |
-          wget -O reject-list1.txt https://ruleset.skk.moe/Clash/domainset/reject.txt
-          wget -O reject-list2.txt https://ruleset.skk.moe/Clash/domainset/reject_extra.txt
+          wget -O reject.txt https://ruleset.skk.moe/Clash/domainset/reject.txt
       - name: Add DOMAIN-SET
         run: |
-          sed -i "/^#.*/d" reject-list1.txt
-          sed -i "s/^/- '/" reject-list1.txt
-          sed -i "s/$/'/" reject-list1.txt
-          sed -i "/^#.*/d" reject-list2.txt
-          sed -i "s/^/- '/" reject-list2.txt
-          sed -i "s/$/'/" reject-list2.txt
-          sed -e "$r reject-list2.txt" reject-list2.txt reject-list1.txt >> reject-list.txt
-          sort reject-list.txt | uniq > reject.txt
-          rm -f reject-list.txt reject-list1.txt reject-list2.txt
+          sed -i "/^#.*/d" reject.txt
+          sed -i "s/^/- '/" reject.txt
+          sed -i "s/$/'/" reject.txt
           sed -i 1i\payload: reject.txt
           update_time="$(TZ=UTC-8 date +'%Y-%m-%d %H:%M:%S')(GMT+8)"
           sed -i '1i\#自动更新时间: '"$update_time"'' reject.txt
