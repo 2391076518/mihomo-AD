@@ -1,0 +1,35 @@
+name: Clean Actions
+on:
+  workflow_dispatch:     # 手动触发
+  schedule:              # 每天自动清理（可选）
+    - cron: '0 2 * * *'
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  clean-runs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete old runs, keep latest 5
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          KEEP=5
+          echo "保留最新 $KEEP 条 Action 记录"
+
+          # 获取所有运行ID（最新在前）
+          RUN_IDS=$(gh run list --json databaseId --limit 1000 --jq '.[].databaseId')
+
+          count=0
+          for id in $RUN_IDS; do
+            count=$((count+1))
+            if [ $count -gt $KEEP ]; then
+              echo "删除旧记录: $id"
+              gh run delete "$id"
+            fi
+          done
+
+          echo "✅ 清理完成！仅保留最新 $KEEP 条运行记录"
